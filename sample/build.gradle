@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+apply from: '../android.gradle'
+apply from: '../versions.gradle'
+
+android {
+    compileSdkVersion compileSdk
+    defaultConfig {
+        applicationId sampleAppId
+        minSdkVersion minSdk
+        targetSdkVersion targetSdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androix.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        sample_release {
+            keyAlias 'key0'
+            keyPassword 'dsf/&27879fd(JJa2'
+            storeFile file('dummy_keystore.jks')
+            storePassword '/(§kjfß2KKS91§A'
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.sample_release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dataBinding {
+        enabled true
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':mbnetworkkit')
+
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+
+    testImplementation "junit:junit:$jUnitVersion"
+    androidTestImplementation "androidx.test:runner:$testRunnerVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+}
