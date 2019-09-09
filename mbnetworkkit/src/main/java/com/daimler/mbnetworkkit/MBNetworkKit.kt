@@ -8,14 +8,7 @@ object MBNetworkKit {
     private lateinit var headerService: HeaderService
 
     fun init(config: NetworkServiceConfig) {
-        headerService = MemoryHeaderService(
-                config.applicationName,
-                config.applicationVersion,
-                config.sdkVersion,
-                config.osName,
-                config.osVersion,
-                config.locale
-        )
+        headerService = MemoryHeaderService.fromNetworkServiceConfig(config)
     }
 
     fun headerService(): HeaderService = headerService

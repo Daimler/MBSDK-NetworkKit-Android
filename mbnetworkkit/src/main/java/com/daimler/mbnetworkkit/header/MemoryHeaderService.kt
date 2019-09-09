@@ -1,5 +1,7 @@
 package com.daimler.mbnetworkkit.header
 
+import com.daimler.mbnetworkkit.NetworkServiceConfig
+
 internal class MemoryHeaderService(
     applicationName: String,
     applicationVersion: String,
@@ -14,4 +16,17 @@ internal class MemoryHeaderService(
     }
 
     override fun currentNetworkLocale(): String = serviceLocale
+
+    companion object {
+        fun fromNetworkServiceConfig(config: NetworkServiceConfig): MemoryHeaderService {
+            return MemoryHeaderService(
+                    config.applicationName,
+                    config.applicationVersion,
+                    config.sdkVersion,
+                    config.osName,
+                    config.osVersion,
+                    config.locale
+            )
+        }
+    }
 }

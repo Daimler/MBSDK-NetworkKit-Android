@@ -4,6 +4,8 @@ import android.os.Handler
 import android.os.Looper
 import com.daimler.mbloggerkit.MBLoggerKit
 import com.daimler.mbnetworkkit.BuildConfig
+import com.daimler.mbnetworkkit.NetworkServiceConfig
+import com.daimler.mbnetworkkit.header.MemoryHeaderService
 import com.daimler.mbnetworkkit.socket.*
 import com.daimler.mbnetworkkit.socket.message.DataSocketMessage
 import com.daimler.mbnetworkkit.socket.message.MessageProcessor
@@ -15,7 +17,11 @@ import okio.ByteString
 import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 
-class OkhttpSocketConnection(reconnection: Reconnection, messageProcessor: MessageProcessor, private val url: String) : ReconnectableSocketConnection(reconnection, messageProcessor) {
+class OkhttpSocketConnection(reconnection: Reconnection,
+                             messageProcessor: MessageProcessor,
+                             private val networkServiceConfig: NetworkServiceConfig? = null,
+                             private val url: String)
+    : ReconnectableSocketConnection(reconnection, messageProcessor) {
 
     private var handler: Handler? = null
 
@@ -64,6 +70,12 @@ class OkhttpSocketConnection(reconnection: Reconnection, messageProcessor: Messa
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
             })
+            .apply {
+                if (this@OkhttpSocketConnection.networkServiceConfig != null) {
+                    val interceptor = MemoryHeaderService.fromNetworkServiceConfig(this@OkhttpSocketConnection.networkServiceConfig).createRisHeaderInterceptor()
+                    addInterceptor(interceptor)
+                }
+            }
             .build()
 
     private fun startConnect(config: ConnectionConfig) {

@@ -20,6 +20,8 @@ class SocketServiceConfig private constructor(
 
         private var sessionId: UUID? = null
 
+        private var networkServiceConfig: NetworkServiceConfig? = null
+
         /**
          * This will configure the socket to automatically try to reconnect if connection failure occurs.
          * Reconnect will only be executed if cause of lost connection is not an invalid or expired token.
@@ -35,13 +37,18 @@ class SocketServiceConfig private constructor(
             return this
         }
 
+        fun useNetworkServiceConfig(networkServiceConfig: NetworkServiceConfig): Builder {
+            this.networkServiceConfig = networkServiceConfig
+            return this
+        }
+
         fun create(): SocketServiceConfig {
             val sessionId = sessionId?.toString() ?: UUID.randomUUID().toString()
             return SocketServiceConfig(sessionId, createSocketConnection())
         }
 
         private fun createSocketConnection(): SocketConnection {
-            return OkhttpSocketConnection(reconnection, messageProcessor, url)
+            return OkhttpSocketConnection(reconnection, messageProcessor, networkServiceConfig, url)
         }
     }
 }
