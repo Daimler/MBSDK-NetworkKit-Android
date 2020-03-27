@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MBNetworkKit Sample</string>
+
+    <string name="button_text">Generate</string>
+</resources>
